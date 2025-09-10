@@ -1,0 +1,1595 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Twitter Clone</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            background-color: #000;
+            color: #fff;
+            line-height: 1.4;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 275px;
+            padding: 20px;
+            border-right: 1px solid #333;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            color: #1d9bf0;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            padding: 12px 16px;
+            margin: 4px 0;
+            border-radius: 24px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            font-size: 20px;
+        }
+
+        .nav-item:hover {
+            background-color: #1a1a1a;
+        }
+
+        .nav-item.active {
+            font-weight: bold;
+        }
+
+        .nav-icon {
+            margin-right: 20px;
+            font-size: 24px;
+        }
+
+        .tweet-btn {
+            background: #1d9bf0;
+            border: none;
+            border-radius: 24px;
+            padding: 16px;
+            color: white;
+            font-size: 17px;
+            font-weight: bold;
+            width: 100%;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        .main-content {
+            margin-left: 275px;
+            width: calc(100% - 275px);
+            max-width: 600px;
+            border-right: 1px solid #333;
+        }
+
+        .header {
+            border-bottom: 1px solid #333;
+            padding: 16px;
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .tweet-composer {
+            border-bottom: 1px solid #333;
+            padding: 16px;
+        }
+
+        .composer-row {
+            display: flex;
+            margin-bottom: 12px;
+        }
+
+        .avatar {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            margin-right: 12px;
+            background: #1d9bf0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .avatar img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .composer-content {
+            flex: 1;
+        }
+
+        .tweet-input {
+            background: transparent;
+            border: none;
+            color: #fff;
+            font-size: 20px;
+            width: 100%;
+            resize: none;
+            outline: none;
+            min-height: 50px;
+        }
+
+        .tweet-input::placeholder {
+            color: #71767b;
+        }
+
+        .composer-actions {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 12px;
+            padding-left: 60px;
+        }
+
+        .media-buttons {
+            display: flex;
+            gap: 16px;
+        }
+
+        .media-btn {
+            background: none;
+            border: none;
+            color: #1d9bf0;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .media-btn:hover {
+            background: rgba(29, 155, 240, 0.1);
+        }
+
+        .tweet-submit {
+            background: #1d9bf0;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 24px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .tweet-submit:disabled {
+            background: #1d4671;
+            cursor: not-allowed;
+        }
+
+        .tweet {
+            border-bottom: 1px solid #333;
+            padding: 16px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+
+        .tweet:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .tweet-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .tweet-author {
+            font-weight: bold;
+            margin-right: 4px;
+        }
+
+        .tweet-username {
+            color: #71767b;
+            margin-right: 4px;
+        }
+
+        .tweet-time {
+            color: #71767b;
+            font-size: 14px;
+        }
+
+        .tweet-content {
+            margin: 12px 0;
+            font-size: 15px;
+            line-height: 1.3;
+            word-wrap: break-word;
+        }
+
+        .tweet-media {
+            margin: 12px 0;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .tweet-media img, .tweet-media video {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        .tweet-actions {
+            display: flex;
+            justify-content: space-between;
+            max-width: 425px;
+            margin-top: 12px;
+        }
+
+        .action-btn {
+            display: flex;
+            align-items: center;
+            background: none;
+            border: none;
+            color: #71767b;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+            font-size: 14px;
+        }
+
+        .action-btn:hover {
+            background: rgba(29, 155, 240, 0.1);
+            color: #1d9bf0;
+        }
+
+        .action-btn.liked {
+            color: #f91880;
+        }
+
+        .action-btn span {
+            margin-left: 8px;
+        }
+
+        .retweet-indicator {
+            color: #00ba7c;
+            font-size: 13px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(91, 112, 131, 0.4);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: #000;
+            border: 1px solid #333;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 16px;
+            border-bottom: 1px solid #333;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: #fff;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .auth-form {
+            padding: 40px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            text-align: left;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #fff;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #333;
+            border-radius: 8px;
+            background: #000;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #1d9bf0;
+        }
+
+        .auth-btn {
+            background: #1d9bf0;
+            border: none;
+            border-radius: 24px;
+            padding: 12px 32px;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            width: 100%;
+            margin: 20px 0 10px 0;
+        }
+
+        .auth-switch {
+            color: #1d9bf0;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+
+        .profile-header {
+            padding: 20px;
+            border-bottom: 1px solid #333;
+        }
+
+        .profile-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+
+        .profile-avatar {
+            width: 80px;
+            height: 80px;
+            margin-right: 20px;
+        }
+
+        .profile-details h2 {
+            font-size: 20px;
+            margin-bottom: 4px;
+        }
+
+        .profile-stats {
+            display: flex;
+            gap: 20px;
+            color: #71767b;
+            font-size: 14px;
+        }
+
+        .follow-btn {
+            background: #1d9bf0;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 24px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: auto;
+        }
+
+        .follow-btn.following {
+            background: transparent;
+            border: 1px solid #533a3b;
+            color: #f4212e;
+        }
+
+        .search-container {
+            padding: 16px;
+            border-bottom: 1px solid #333;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 16px;
+            background: #202327;
+            border: 1px solid #333;
+            border-radius: 24px;
+            color: #fff;
+            font-size: 16px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #1d9bf0;
+        }
+
+        .search-results {
+            padding: 16px;
+        }
+
+        .search-section {
+            margin-bottom: 32px;
+        }
+
+        .search-section h3 {
+            margin-bottom: 16px;
+            color: #fff;
+        }
+
+        .user-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-bottom: 1px solid #333;
+            cursor: pointer;
+        }
+
+        .user-item:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .user-info {
+            flex: 1;
+            margin-left: 12px;
+        }
+
+        .user-name {
+            font-weight: bold;
+            margin-bottom: 2px;
+        }
+
+        .user-username {
+            color: #71767b;
+            font-size: 14px;
+        }
+
+        .comments-section {
+            border-top: 1px solid #333;
+            padding: 16px;
+        }
+
+        .comment {
+            padding: 12px 0;
+            border-bottom: 1px solid #333;
+        }
+
+        .comment:last-child {
+            border-bottom: none;
+        }
+
+        .comment-form {
+            display: flex;
+            margin-bottom: 20px;
+        }
+
+        .comment-input {
+            flex: 1;
+            margin-left: 12px;
+            background: transparent;
+            border: 1px solid #333;
+            border-radius: 20px;
+            padding: 12px 16px;
+            color: #fff;
+            resize: none;
+        }
+
+        .comment-submit {
+            background: #1d9bf0;
+            border: none;
+            border-radius: 20px;
+            padding: 8px 16px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            margin-left: 8px;
+        }
+
+        .file-preview {
+            margin-top: 12px;
+            position: relative;
+        }
+
+        .file-preview img, .file-preview video {
+            max-width: 100%;
+            border-radius: 16px;
+        }
+
+        .file-remove {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            border-radius: 50%;
+            color: white;
+            width: 32px;
+            height: 32px;
+            cursor: pointer;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #71767b;
+        }
+
+        .error {
+            background: #1d1f23;
+            border: 1px solid #f4212e;
+            color: #f4212e;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .success {
+            background: #1d1f23;
+            border: 1px solid #00ba7c;
+            color: #00ba7c;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #71767b;
+        }
+
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid #333;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 16px;
+            text-align: center;
+            cursor: pointer;
+            font-weight: bold;
+            color: #71767b;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab.active {
+            color: #fff;
+            border-bottom-color: #1d9bf0;
+        }
+
+        .tab:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 68px;
+            }
+
+            .nav-text {
+                display: none;
+            }
+
+            .main-content {
+                margin-left: 68px;
+                width: calc(100% - 68px);
+            }
+
+            .composer-actions {
+                padding-left: 0;
+            }
+        }
+
+        @media (max-width: 500px) {
+            .sidebar {
+                position: fixed;
+                bottom: 0;
+                top: auto;
+                width: 100%;
+                height: 60px;
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                border-top: 1px solid #333;
+                border-right: none;
+                background: #000;
+                z-index: 100;
+            }
+
+            .logo {
+                display: none;
+            }
+
+            .nav-item {
+                margin: 0;
+                padding: 8px;
+            }
+
+            .tweet-btn {
+                position: fixed;
+                bottom: 80px;
+                right: 20px;
+                width: 56px;
+                height: 56px;
+                border-radius: 50%;
+                font-size: 24px;
+            }
+
+            .main-content {
+                margin-left: 0;
+                width: 100%;
+                padding-bottom: 60px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <nav class="sidebar">
+            <div class="logo">Twitter</div>
+            <div class="nav-item active" data-tab="home">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Home</span>
+            </div>
+            <div class="nav-item" data-tab="search">
+                <span class="nav-icon">🔍</span>
+                <span class="nav-text">Search</span>
+            </div>
+            <div class="nav-item" data-tab="profile">
+                <span class="nav-icon">👤</span>
+                <span class="nav-text">Profile</span>
+            </div>
+            <div class="nav-item" id="auth-nav">
+                <span class="nav-icon">🔑</span>
+                <span class="nav-text">Login</span>
+            </div>
+            <button class="tweet-btn" id="compose-btn">Tweet</button>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Home Tab -->
+            <div id="home-tab" class="tab-content">
+                <div class="header">
+                    <h1>Home</h1>
+                </div>
+
+                <!-- Tweet Composer -->
+                <div class="tweet-composer" id="tweet-composer">
+                    <div class="composer-row">
+                        <div class="avatar" id="composer-avatar">
+                            <span>U</span>
+                        </div>
+                        <div class="composer-content">
+                            <textarea class="tweet-input" id="tweet-input" placeholder="What's happening?" maxlength="280"></textarea>
+                            <div class="file-preview" id="file-preview"></div>
+                        </div>
+                    </div>
+                    <div class="composer-actions">
+                        <div class="media-buttons">
+                            <button class="media-btn" id="image-btn" title="Add Image">
+                                🖼️
+                                <input type="file" id="image-input" accept="image/*" style="display: none;">
+                            </button>
+                            <button class="media-btn" id="video-btn" title="Add Video">
+                                🎥
+                                <input type="file" id="video-input" accept="video/*" style="display: none;">
+                            </button>
+                        </div>
+                        <button class="tweet-submit" id="tweet-submit" disabled>Tweet</button>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div id="timeline">
+                    <div class="loading" id="timeline-loading">Loading tweets...</div>
+                </div>
+            </div>
+
+            <!-- Search Tab -->
+            <div id="search-tab" class="tab-content hidden">
+                <div class="header">
+                    <h1>Search</h1>
+                </div>
+                <div class="search-container">
+                    <input type="text" class="search-input" id="search-input" placeholder="Search Twitter">
+                </div>
+                <div class="search-results" id="search-results">
+                    <div class="empty-state">Enter a search term to find users and tweets</div>
+                </div>
+            </div>
+
+            <!-- Profile Tab -->
+            <div id="profile-tab" class="tab-content hidden">
+                <div class="header">
+                    <h1>Profile</h1>
+                </div>
+                <div id="profile-content">
+                    <div class="empty-state">Please log in to view your profile</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="modal" id="auth-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="auth-title">Sign in to Twitter</h2>
+                <button class="modal-close" id="auth-close">×</button>
+            </div>
+            <form class="auth-form" id="auth-form">
+                <div id="auth-error" class="error hidden"></div>
+                <div class="form-group">
+                    <label for="auth-username">Username or Email</label>
+                    <input type="text" id="auth-username" required>
+                </div>
+                <div class="form-group" id="email-group" style="display: none;">
+                    <label for="auth-email">Email</label>
+                    <input type="email" id="auth-email">
+                </div>
+                <div class="form-group" id="fullname-group" style="display: none;">
+                    <label for="auth-fullname">Full Name</label>
+                    <input type="text" id="auth-fullname">
+                </div>
+                <div class="form-group">
+                    <label for="auth-password">Password</label>
+                    <input type="password" id="auth-password" required>
+                </div>
+                <button type="submit" class="auth-btn" id="auth-submit">Sign in</button>
+                <div class="auth-switch" id="auth-switch">
+                    Don't have an account? <span id="auth-switch-text">Sign up</span>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tweet Detail Modal -->
+    <div class="modal" id="tweet-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Tweet</h2>
+                <button class="modal-close" id="tweet-close">×</button>
+            </div>
+            <div id="tweet-detail-content"></div>
+            <div class="comments-section">
+                <div class="comment-form" id="comment-form" style="display: none;">
+                    <div class="avatar">
+                        <span>U</span>
+                    </div>
+                    <textarea class="comment-input" id="comment-input" placeholder="Tweet your reply" maxlength="280"></textarea>
+                    <button class="comment-submit" id="comment-submit">Reply</button>
+                </div>
+                <div id="comments-list"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class TwitterClone {
+            constructor() {
+                this.currentUser = null;
+                this.token = localStorage.getItem('token');
+                this.currentTab = 'home';
+                this.isAuthMode = 'login';
+                this.selectedFiles = {
+                    image: null,
+                    video: null
+                };
+
+                this.initializeApp();
+            }
+
+            async initializeApp() {
+                this.setupEventListeners();
+                await this.checkAuthStatus();
+                this.loadTimeline();
+            }
+
+            setupEventListeners() {
+                // Navigation
+                document.querySelectorAll('[data-tab]').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        this.switchTab(e.target.closest('[data-tab]').dataset.tab);
+                    });
+                });
+
+                // Auth
+                document.getElementById('auth-nav').addEventListener('click', () => {
+                    if (this.currentUser) {
+                        this.logout();
+                    } else {
+                        this.showAuthModal();
+                    }
+                });
+
+                document.getElementById('auth-form').addEventListener('submit', (e) => {
+                    this.handleAuth(e);
+                });
+
+                document.getElementById('auth-switch').addEventListener('click', () => {
+                    this.toggleAuthMode();
+                });
+
+                document.getElementById('auth-close').addEventListener('click', () => {
+                    this.hideAuthModal();
+                });
+
+                // Tweet composer
+                document.getElementById('compose-btn').addEventListener('click', () => {
+                    if (!this.currentUser) {
+                        this.showAuthModal();
+                        return;
+                    }
+                    document.getElementById('tweet-input').focus();
+                });
+
+                document.getElementById('tweet-input').addEventListener('input', () => {
+                    this.updateTweetButton();
+                });
+
+                document.getElementById('tweet-submit').addEventListener('click', () => {
+                    this.createTweet();
+                });
+
+                // File uploads
+                document.getElementById('image-btn').addEventListener('click', () => {
+                    if (!this.currentUser) {
+                        this.showAuthModal();
+                        return;
+                    }
+                    document.getElementById('image-input').click();
+                });
+
+                document.getElementById('video-btn').addEventListener('click', () => {
+                    if (!this.currentUser) {
+                        this.showAuthModal();
+                        return;
+                    }
+                    document.getElementById('video-input').click();
+                });
+
+                document.getElementById('image-input').addEventListener('change', (e) => {
+                    this.handleFileSelect(e, 'image');
+                });
+
+                document.getElementById('video-input').addEventListener('change', (e) => {
+                    this.handleFileSelect(e, 'video');
+                });
+
+                // Search
+                document.getElementById('search-input').addEventListener('input', (e) => {
+                    clearTimeout(this.searchTimeout);
+                    this.searchTimeout = setTimeout(() => {
+                        this.performSearch(e.target.value);
+                    }, 500);
+                });
+
+                // Tweet modal
+                document.getElementById('tweet-close').addEventListener('click', () => {
+                    this.hideTweetModal();
+                });
+
+                document.getElementById('comment-submit').addEventListener('click', () => {
+                    this.addComment();
+                });
+
+                // Modal close on backdrop click
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) {
+                            modal.classList.remove('active');
+                        }
+                    });
+                });
+            }
+
+            async checkAuthStatus() {
+                if (!this.token) return;
+
+                try {
+                    const response = await fetch('/api/auth/me', {
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        this.currentUser = await response.json();
+                        this.updateUIForLoggedInUser();
+                    } else {
+                        this.logout();
+                    }
+                } catch (error) {
+                    console.error('Auth check failed:', error);
+                }
+            }
+
+            updateUIForLoggedInUser() {
+                const authNav = document.getElementById('auth-nav');
+                authNav.querySelector('.nav-text').textContent = 'Logout';
+                authNav.querySelector('.nav-icon').textContent = '🚪';
+
+                const composerAvatar = document.getElementById('composer-avatar');
+                if (this.currentUser.profile_image) {
+                    composerAvatar.innerHTML = `<img src="${this.currentUser.profile_image}" alt="Profile">`;
+                } else {
+                    composerAvatar.innerHTML = `<span>${this.currentUser.full_name.charAt(0).toUpperCase()}</span>`;
+                }
+
+                document.getElementById('tweet-composer').style.display = 'block';
+            }
+
+            showAuthModal() {
+                document.getElementById('auth-modal').classList.add('active');
+            }
+
+            hideAuthModal() {
+                document.getElementById('auth-modal').classList.remove('active');
+                document.getElementById('auth-error').classList.add('hidden');
+                document.getElementById('auth-form').reset();
+            }
+
+            toggleAuthMode() {
+                this.isAuthMode = this.isAuthMode === 'login' ? 'register' : 'login';
+                const isRegister = this.isAuthMode === 'register';
+
+                document.getElementById('auth-title').textContent = isRegister ? 'Join Twitter today' : 'Sign in to Twitter';
+                document.getElementById('auth-submit').textContent = isRegister ? 'Sign up' : 'Sign in';
+                document.getElementById('auth-switch-text').textContent = isRegister ? 'Sign in' : 'Sign up';
+                document.getElementById('auth-switch').firstChild.textContent = isRegister ? 'Have an account? ' : "Don't have an account? ";
+                
+                document.getElementById('email-group').style.display = isRegister ? 'block' : 'none';
+                document.getElementById('fullname-group').style.display = isRegister ? 'block' : 'none';
+
+                if (isRegister) {
+                    document.getElementById('auth-email').required = true;
+                    document.getElementById('auth-fullname').required = true;
+                } else {
+                    document.getElementById('auth-email').required = false;
+                    document.getElementById('auth-fullname').required = false;
+                }
+            }
+
+            async handleAuth(e) {
+                e.preventDefault();
+                const errorEl = document.getElementById('auth-error');
+                errorEl.classList.add('hidden');
+
+                const username = document.getElementById('auth-username').value;
+                const password = document.getElementById('auth-password').value;
+
+                let payload = { username, password };
+                let endpoint = '/api/auth/login';
+
+                if (this.isAuthMode === 'register') {
+                    endpoint = '/api/auth/register';
+                    payload.email = document.getElementById('auth-email').value;
+                    payload.full_name = document.getElementById('auth-fullname').value;
+                }
+
+                try {
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(payload)
+                    });
+
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        this.token = data.token;
+                        this.currentUser = data.user;
+                        localStorage.setItem('token', this.token);
+                        this.updateUIForLoggedInUser();
+                        this.hideAuthModal();
+                        this.loadTimeline();
+                    } else {
+                        errorEl.textContent = data.error;
+                        errorEl.classList.remove('hidden');
+                    }
+                } catch (error) {
+                    errorEl.textContent = 'Network error. Please try again.';
+                    errorEl.classList.remove('hidden');
+                }
+            }
+
+            logout() {
+                this.currentUser = null;
+                this.token = null;
+                localStorage.removeItem('token');
+                
+                const authNav = document.getElementById('auth-nav');
+                authNav.querySelector('.nav-text').textContent = 'Login';
+                authNav.querySelector('.nav-icon').textContent = '🔑';
+
+                document.getElementById('tweet-composer').style.display = 'none';
+                this.switchTab('home');
+                this.loadTimeline();
+            }
+
+            switchTab(tabName) {
+                // Update active nav item
+                document.querySelectorAll('.nav-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                document.querySelector(`[data-tab="${tabName}"]`).classList.add('active');
+
+                // Show/hide tab content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+                document.getElementById(`${tabName}-tab`).classList.remove('hidden');
+
+                this.currentTab = tabName;
+
+                // Load tab-specific content
+                if (tabName === 'profile' && this.currentUser) {
+                    this.loadProfile();
+                }
+            }
+
+            handleFileSelect(e, type) {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                // Clear the other file type
+                const otherType = type === 'image' ? 'video' : 'image';
+                this.selectedFiles[otherType] = null;
+                document.getElementById(`${otherType}-input`).value = '';
+
+                this.selectedFiles[type] = file;
+                this.showFilePreview(file, type);
+                this.updateTweetButton();
+            }
+
+            showFilePreview(file, type) {
+                const preview = document.getElementById('file-preview');
+                const url = URL.createObjectURL(file);
+
+                const element = type === 'image' ? 'img' : 'video';
+                const controls = type === 'video' ? 'controls' : '';
+
+                preview.innerHTML = `
+                    <${element} src="${url}" ${controls}></${element}>
+                    <button class="file-remove" onclick="twitterClone.removeFile('${type}')">×</button>
+                `;
+            }
+
+            removeFile(type) {
+                this.selectedFiles[type] = null;
+                document.getElementById(`${type}-input`).value = '';
+                document.getElementById('file-preview').innerHTML = '';
+                this.updateTweetButton();
+            }
+
+            updateTweetButton() {
+                const content = document.getElementById('tweet-input').value.trim();
+                const hasFile = this.selectedFiles.image || this.selectedFiles.video;
+                const submitBtn = document.getElementById('tweet-submit');
+
+                submitBtn.disabled = !content && !hasFile;
+            }
+
+            async createTweet() {
+                if (!this.currentUser) return;
+
+                const content = document.getElementById('tweet-input').value.trim();
+                const formData = new FormData();
+
+                if (content) formData.append('content', content);
+                if (this.selectedFiles.image) formData.append('image', this.selectedFiles.image);
+                if (this.selectedFiles.video) formData.append('video', this.selectedFiles.video);
+
+                try {
+                    const response = await fetch('/api/tweets', {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        },
+                        body: formData
+                    });
+
+                    if (response.ok) {
+                        document.getElementById('tweet-input').value = '';
+                        document.getElementById('file-preview').innerHTML = '';
+                        this.selectedFiles = { image: null, video: null };
+                        this.updateTweetButton();
+                        this.loadTimeline();
+                    }
+                } catch (error) {
+                    console.error('Tweet creation failed:', error);
+                }
+            }
+
+            async loadTimeline() {
+                const timelineEl = document.getElementById('timeline');
+                const loadingEl = document.getElementById('timeline-loading');
+                
+                loadingEl.style.display = 'block';
+
+                try {
+                    const endpoint = this.currentUser ? '/api/tweets/timeline' : '/api/tweets';
+                    const headers = {};
+                    
+                    if (this.currentUser) {
+                        headers['Authorization'] = `Bearer ${this.token}`;
+                    }
+
+                    const response = await fetch(endpoint, { headers });
+                    const tweets = await response.json();
+
+                    loadingEl.style.display = 'none';
+                    this.renderTweets(tweets, timelineEl);
+                } catch (error) {
+                    loadingEl.textContent = 'Failed to load timeline';
+                    console.error('Timeline loading failed:', error);
+                }
+            }
+
+            renderTweets(tweets, container) {
+                if (tweets.length === 0) {
+                    container.innerHTML = '<div class="empty-state">No tweets to show</div>';
+                    return;
+                }
+
+                const tweetsHtml = tweets.map(tweet => this.renderTweet(tweet)).join('');
+                container.innerHTML = tweetsHtml;
+
+                // Add click handlers
+                container.querySelectorAll('.tweet').forEach(tweetEl => {
+                    tweetEl.addEventListener('click', (e) => {
+                        if (e.target.closest('.action-btn')) return;
+                        const tweetId = tweetEl.dataset.tweetId;
+                        this.showTweetDetail(tweetId);
+                    });
+                });
+
+                // Add action handlers
+                this.setupTweetActionHandlers(container);
+            }
+
+            renderTweet(tweet) {
+                const isRetweet = tweet.is_retweet;
+                const displayTweet = isRetweet ? {
+                    ...tweet,
+                    content: tweet.original_content,
+                    username: tweet.original_username,
+                    full_name: tweet.original_full_name
+                } : tweet;
+
+                const retweetIndicator = isRetweet ? 
+                    `<div class="retweet-indicator">🔄 ${tweet.username} Retweeted</div>` : '';
+
+                const media = this.renderMedia(displayTweet);
+                const avatar = displayTweet.profile_image ? 
+                    `<img src="${displayTweet.profile_image}" alt="Profile">` :
+                    `<span>${displayTweet.full_name.charAt(0).toUpperCase()}</span>`;
+
+                return `
+                    <div class="tweet" data-tweet-id="${tweet.id}">
+                        ${retweetIndicator}
+                        <div class="composer-row">
+                            <div class="avatar">${avatar}</div>
+                            <div class="composer-content">
+                                <div class="tweet-header">
+                                    <span class="tweet-author">${displayTweet.full_name}</span>
+                                    <span class="tweet-username">@${displayTweet.username}</span>
+                                    <span class="tweet-time">· ${this.formatTime(tweet.created_at)}</span>
+                                </div>
+                                ${displayTweet.content ? `<div class="tweet-content">${this.escapeHtml(displayTweet.content)}</div>` : ''}
+                                ${media}
+                                <div class="tweet-actions">
+                                    <button class="action-btn comment-btn" data-tweet-id="${tweet.id}">
+                                        💬 <span>${tweet.comments_count || 0}</span>
+                                    </button>
+                                    <button class="action-btn retweet-btn" data-tweet-id="${tweet.id}">
+                                        🔄 <span>${tweet.retweets_count || 0}</span>
+                                    </button>
+                                    <button class="action-btn like-btn ${tweet.user_liked ? 'liked' : ''}" data-tweet-id="${tweet.id}">
+                                        ${tweet.user_liked ? '❤️' : '🤍'} <span>${tweet.likes_count || 0}</span>
+                                    </button>
+                                    <button class="action-btn share-btn" data-tweet-id="${tweet.id}">
+                                        📤
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+
+            renderMedia(tweet) {
+                if (tweet.image_url) {
+                    return `<div class="tweet-media"><img src="${tweet.image_url}" alt="Tweet image"></div>`;
+                }
+                if (tweet.video_url) {
+                    return `<div class="tweet-media"><video src="${tweet.video_url}" controls></video></div>`;
+                }
+                return '';
+            }
+
+            setupTweetActionHandlers(container) {
+                // Like buttons
+                container.querySelectorAll('.like-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        if (!this.currentUser) {
+                            this.showAuthModal();
+                            return;
+                        }
+                        await this.toggleLike(btn.dataset.tweetId, btn);
+                    });
+                });
+
+                // Retweet buttons
+                container.querySelectorAll('.retweet-btn').forEach(btn => {
+                    btn.addEventListener('click', async (e) => {
+                        e.stopPropagation();
+                        if (!this.currentUser) {
+                            this.showAuthModal();
+                            return;
+                        }
+                        await this.retweet(btn.dataset.tweetId);
+                    });
+                });
+
+                // Comment buttons
+                container.querySelectorAll('.comment-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        this.showTweetDetail(btn.dataset.tweetId);
+                    });
+                });
+            }
+
+            async toggleLike(tweetId, button) {
+                try {
+                    const response = await fetch(`/api/tweets/${tweetId}/like`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        const data = await response.json();
+                        const countSpan = button.querySelector('span');
+                        let count = parseInt(countSpan.textContent);
+
+                        if (data.liked) {
+                            button.classList.add('liked');
+                            button.innerHTML = `❤️ <span>${count + 1}</span>`;
+                        } else {
+                            button.classList.remove('liked');
+                            button.innerHTML = `🤍 <span>${count - 1}</span>`;
+                        }
+                    }
+                } catch (error) {
+                    console.error('Like toggle failed:', error);
+                }
+            }
+
+            async retweet(tweetId) {
+                try {
+                    const response = await fetch(`/api/tweets/${tweetId}/retweet`, {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${this.token}`
+                        }
+                    });
+
+                    if (response.ok) {
+                        this.loadTimeline();
+                    } else {
+                        const data = await response.json();
+                        alert(data.error);
+                    }
+                } catch (error) {
+                    console.error('Retweet failed:', error);
+                }
+            }
+
+            async showTweetDetail(tweetId) {
+                const modal = document.getElementById('tweet-modal');
+                const content = document.getElementById('tweet-detail-content');
+                const commentForm = document.getElementById('comment-form');
+                const commentsList = document.getElementById('comments-list');
+
+                modal.classList.add('active');
+                content.innerHTML = '<div class="loading">Loading tweet...</div>';
+
+                try {
+                    // Load tweet details (using timeline endpoint for simplicity)
+                    const response = await fetch('/api/tweets');
+                    const tweets = await response.json();
+                    const tweet = tweets.find(t => t.id == tweetId);
+
+                    if (tweet) {
+                        content.innerHTML = this.renderTweet(tweet);
+                        this.setupTweetActionHandlers(content);
+                    }
+
+                    // Show comment form if logged in
+                    if (this.currentUser) {
+                        commentForm.style.display = 'flex';
+                    }
+
+                    // Load comments
+                    await this.loadComments(tweetId);
+
+                } catch (error) {
+                    content.innerHTML = '<div class="error">Failed to load tweet</div>';
+                }
+            }
+
+            hideTweetModal() {
+                document.getElementById('tweet-modal').classList.remove('active');
+                document.getElementById('comment-input').value = '';
+            }
+
+            async loadComments(tweetId) {
+                const commentsList = document.getElementById('comments-list');
+                
+                try {
+                    const response = await fetch(`/api/tweets/${tweetId}/comments`);
+                    const comments = await response.json();
+
+                    if (comments.length === 0) {
+                        commentsList.innerHTML = '<div class="empty-state">No comments yet</div>';
+                        return;
+                    }
+
+                    const commentsHtml = comments.map(comment => {
+                        const avatar = comment.profile_image ? 
+                            `<img src="${comment.profile_image}" alt="Profile">` :
+                            `<span>${comment.full_name.charAt(0).toUpperCase()}</span>`;
+
+                        return `
+                            <div class="comment">
+                                <div class="composer-row">
+                                    <div class="avatar">${avatar}</div>
+                                    <div class="composer-content">
+                                        <div class="tweet-header">
+                                            <span class="tweet-author">${comment.full_name}</span>
+                                            <span class="tweet-username">@${comment.username}</span>
+                                            <span class="tweet-time">· ${this.formatTime(comment.created_at)}</span>
+                                        </div>
+                                        <div class="tweet-content">${this.escapeHtml(comment.content)}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                    }).join('');
+
+                    commentsList.innerHTML = commentsHtml;
+                } catch (error) {
+                    commentsList.innerHTML = '<div class="error">Failed to load comments</div>';
+                }
+            }
+
+            async addComment() {
+                const content = document.getElementById('comment-input').value.trim();
+                if (!content || !this.currentUser) return;
+
+                const tweetId = document.querySelector('#tweet-detail-content .tweet').dataset.tweetId;
+
+                try {
+                    const response = await fetch(`/api/tweets/${tweetId}/comment`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${this.token}`
+                        },
+                        body: JSON.stringify({ content })
+                    });
+
+                    if (response.ok) {
+                        document.getElementById('comment-input').value = '';
+                        await this.loadComments(tweetId);
+                    }
+                } catch (error) {
+                    console.error('Comment creation failed:', error);
+                }
+            }
+
+            async performSearch(query) {
+                const resultsEl = document.getElementById('search-results');
+                
+                if (!query.trim()) {
+                    resultsEl.innerHTML = '<div class="empty-state">Enter a search term to find users and tweets</div>';
+                    return;
+                }
+
+                resultsEl.innerHTML = '<div class="loading">Searching...</div>';
+
+                try {
+                    const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+                    const results = await response.json();
+
+                    let html = '';
+
+                    if (results.users && results.users.length > 0) {
+                        html += '<div class="search-section"><h3>Users</h3>';
+                        results.users.forEach(user => {
+                            const avatar = user.profile_image ? 
+                                `<img src="${user.profile_image}" alt="Profile">` :
+                                `<span>${user.full_name.charAt(0).toUpperCase()}</span>`;
+
+                            html += `
+                                <div class="user-item" onclick="twitterClone.viewProfile('${user.username}')">
+                                    <div class="avatar">${avatar}</div>
+                                    <div class="user-info">
+                                        <div class="user-name">${user.full_name}</div>
+                                        <div class="user-username">@${user.username}</div>
+                                        ${user.bio ? `<div class="user-bio">${this.escapeHtml(user.bio)}</div>` : ''}
+                                    </div>
+                                </div>
+                            `;
+                        });
+                        html += '</div>';
+                    }
+
+                    if (results.tweets && results.tweets.length > 0) {
+                        html += '<div class="search-section"><h3>Tweets</h3>';
+                        results.tweets.forEach(tweet => {
+                            html += this.renderTweet(tweet);
+                        });
+                        html += '</div>';
+                    }
+
+                    if (html === '') {
+                        html = '<div class="empty-state">No results found</div>';
+                    }
+
+                    resultsEl.innerHTML = html;
+                    this.setupTweetActionHandlers(resultsEl);
+
+                } catch (error) {
+                    resultsEl.innerHTML = '<div class="error">Search failed</div>';
+                }
+            }
+
+            async viewProfile(username) {
+                this.switchTab('profile');
+                const profileContent = document.getElementById('profile-content');
+                
+                profileContent.innerHTML = '<div class="loading">Loading profile...</div>';
+
+                try {
+                    const response = await fetch(`/api/users/${username}`);
+                    
+                    if (!response.ok) {
+                        profileContent.innerHTML = '<div class="error">User not found</div>';
+                        return;
+                    }
+
+                    const data = await response.json();
+                    const { user, tweets } = data;
+
+                    const avatar = user.profile_image ? 
+                        `<img src="${user.profile_image}" alt="Profile">` :
+                        `<span>${user.full_name.charAt(0).toUpperCase()}</span>`;
+
+                    let profileHtml = `
+                        <div class="profile-header">
+                            <div class="profile-info">
+                                <div class="avatar profile-avatar">${avatar}</div>
+                                <div class="profile-details">
+                                    <h2>${user.full_name}</h2>
+                                    <div class="user-username">@${user.username}</div>
+                                    ${user.bio ? `<div class="profile-bio">${this.escapeHtml(user.bio)}</div>` : ''}
+                                    <div class="profile-stats">
+                                        <span><strong>${user.following_count}</strong> Following</span>
+                                        <span><strong>${user.followers_count}</strong> Followers</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+
+                    if (tweets.length > 0) {
+                        profileHtml += '<div class="profile-tweets">' + 
+                            tweets.map(tweet => this.renderTweet(tweet)).join('') + 
+                            '</div>';
+                    } else {
+                        profileHtml += '<div class="empty-state">No tweets yet</div>';
+                    }
+
+                    profileContent.innerHTML = profileHtml;
+                    this.setupTweetActionHandlers(profileContent);
+
+                } catch (error) {
+                    profileContent.innerHTML = '<div class="error">Failed to load profile</div>';
+                }
+            }
+
+            async loadProfile() {
+                if (!this.currentUser) {
+                    document.getElementById('profile-content').innerHTML = 
+                        '<div class="empty-state">Please log in to view your profile</div>';
+                    return;
+                }
+
+                this.viewProfile(this.currentUser.username);
+            }
+
+            formatTime(timestamp) {
+                const date = new Date(timestamp);
+                const now = new Date();
+                const diff = now - date;
+                const minutes = Math.floor(diff / 60000);
+                const hours = Math.floor(minutes / 60);
+                const days = Math.floor(hours / 24);
+
+                if (minutes < 1) return 'now';
+                if (minutes < 60) return `${minutes}m`;
+                if (hours < 24) return `${hours}h`;
+                if (days < 7) return `${days}d`;
+                
+                return date.toLocaleDateString();
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // Initialize the app
+        const twitterClone = new TwitterClone();
+
+        // Make it globally accessible for onclick handlers
+        window.twitterClone = twitterClone;
+    </script>
+</body>
+</html>
